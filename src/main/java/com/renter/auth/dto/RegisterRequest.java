@@ -1,11 +1,15 @@
 package com.renter.auth.dto;
 
+import com.renter.auth.model.User;
+
 public class RegisterRequest {
     private String username;
     private String email;
     private String firstName;
     private String lastName;
     private String password;
+    private String phoneNumber;
+    private User.UserType userType;
 
     // Getters and setters
     public String getUsername() { return username; }
@@ -22,4 +26,33 @@ public class RegisterRequest {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public User.UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(User.UserType userType) {
+        this.userType = userType;
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterRequest{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", userType=" + userType +
+                '}';
+    }
 }
