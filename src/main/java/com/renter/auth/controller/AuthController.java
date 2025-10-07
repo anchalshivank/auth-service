@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -93,6 +94,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
+            
+            Optional<User> userOpt = userService.findByEmail(request.getUsername());
+
+            if(!userOpt.isPresent()){
+                return ResponseEntity.notFound().build();
+            }
+
+            User user = userOpt.get();
+
             // Delegate to Keycloak for authentication
             String token = keycloakService.authenticateUser(
                     request.getUsername(),
@@ -100,6 +110,7 @@ public class AuthController {
             );
 
             return ResponseEntity.ok(Map.of(
+                    "user", user,
                     "token", token,
                     "message", "Login successful"
             ));
