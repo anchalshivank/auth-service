@@ -106,7 +106,7 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd ~/rent-app
+          cd ~/renter/rent-management-deploy
           sudo apt-get update
           sudo apt-get install -y unzip curl
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
