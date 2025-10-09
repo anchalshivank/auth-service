@@ -50,7 +50,11 @@ jobs:
     - name: Install latest AWS CLI and Docker
       run: |
         sudo apt-get update
-        sudo apt-get install -y awscli docker.io
+        sudo apt-get install -y unzip curl docker.io
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip -q awscliv2.zip
+        sudo ./aws/install
+
         aws --version
         docker --version
 
