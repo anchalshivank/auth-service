@@ -101,6 +101,8 @@ jobs:
 
     - name: Deploy to EC2 via SSH
       uses: appleboy/ssh-action@v0.1.10
+      env: 
+        IMAGE: ${{ needs.build-and-push.outputs.image }}
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
@@ -116,7 +118,7 @@ jobs:
             sudo docker login --username AWS --password-stdin \
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-          sudo docker pull ${{ needs.build-and-push.outputs.image }}
+          sudo docker pull $IMAGE
           sudo docker-compose -f docker-compose.prod.yml pull auth-service
           sudo docker-compose -f docker-compose.prod.yml up -d auth-service
 
