@@ -104,14 +104,12 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
+        envs: AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION,AWS_ACCOUNT_ID,ECR_REPOSITORY
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           cd ~/renter/rent-management-deploy
           sudo apt-get update
           sudo apt-get install -y unzip curl
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip -q awscliv2.zip
-          sudo ./aws/install
 
 
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
