@@ -113,18 +113,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y unzip curl
 
-
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
             sudo docker login --username AWS --password-stdin \
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-          sudo docker pull $IMAGE
           sudo docker-compose -f docker-compose.prod.yml pull auth-service
           sudo docker-compose -f docker-compose.prod.yml up -d auth-service
-
-          echo "Waiting for service to become healthy..."
-          sleep 10
-          curl -f http://localhost:8081/actuator/health || echo "Service not ready yet"
 
     - name: Deployment Summary
       run: |
