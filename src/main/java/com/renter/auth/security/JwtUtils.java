@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,28 +49,38 @@ public class JwtUtils {
 
     }
 
-    private RSAPublicKey getPublicKey(String kid) throws Exception{
+      private RSAPublicKey getPublicKey(String kid) throws Exception{
 
         if (keyCache.containsKey(kid)) return keyCache.get(kid);
 
-        System.out.println("------------------------------>>>>>"+ jwksUrl);
+        System.out.println("------------------------------>>>>>" + jwksUrl);
 
-        JWKSet jwkSet = JWKSet.load(new URL(jwksUrl));
-        System.out.println("-------------2----------------->>>>>"+ jwkSet);
+        try {
+            // Add timeouts to prevent hanging indefinitely
+            URL url = new URL(jwksUrl);
+            URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(5000);  // 5 seconds connect timeout
+            connection.setReadTimeout(5000);     // 5 seconds read timeout
+            
+            System.out.println("Fetching JWKS from Keycloak...");
+            JWKSet jwkSet = JWKSet.load(connection.getInputStream());
+            System.out.println("-------------2----------------->>>>>" + jwkSet);
 
-        JWK jwk = jwkSet.getKeyByKeyId(kid);
-
-        System.out.println("-------------3----------------->>>>>"+ jwk);
-        if (jwk instanceof RSAKey rsaKey){
-
-            RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
-            keyCache.put(kid, publicKey);
-            return publicKey;
-
+            JWK jwk = jwkSet.getKeyByKeyId(kid);
+            System.out.println("-------------3----------------->>>>>" + jwk);
+            
+            if (jwk instanceof RSAKey rsaKey){
+                RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
+                keyCache.put(kid, publicKey);
+                return publicKey;
+            }
+        } catch (Exception e) {
+            System.err.println("ERROR fetching JWKS: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch JWKS from Keycloak at " + jwksUrl, e);
         }
 
         return null;
-
     }
 
 
