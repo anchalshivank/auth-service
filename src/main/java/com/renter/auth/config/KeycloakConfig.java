@@ -35,11 +35,11 @@ public class KeycloakConfig{
         return KeycloakBuilder.builder()
                 .serverUrl(authServiceUrl)
                 .realm(realm)
-                .username(adminUser)
-                .password(adminPassword)
-                .grantType(OAuth2Constants.PASSWORD)
-                .clientId(clientId)
+                // .username(adminUser)
+                // .password(adminPassword)
                 .clientSecret(clientSecret)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                .clientId(clientId)
                 .build();
     }
 }
