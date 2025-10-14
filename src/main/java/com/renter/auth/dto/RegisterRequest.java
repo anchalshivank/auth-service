@@ -10,6 +10,7 @@ public class RegisterRequest {
     private String password;
     private String phoneNumber;
     private User.UserType userType;
+    private UserProfileDto profile;
 
     // Getters and setters
     public String getUsername() { return username; }
@@ -43,6 +44,14 @@ public class RegisterRequest {
         this.userType = userType;
     }
 
+    public UserProfileDto getProfile() {
+        return profile;
+    }
+
+    public void setProfile(UserProfileDto profile) {
+        this.profile = profile;
+    }
+
     @Override
     public String toString() {
         return "RegisterRequest{" +
@@ -52,7 +61,8 @@ public class RegisterRequest {
                 ", lastName='" + lastName + '\'' +
                 ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", userType=" + userType +
+                ", userType=" + userType + '\''+
+                ", profile=" + profile +
                 '}';
     }
 }

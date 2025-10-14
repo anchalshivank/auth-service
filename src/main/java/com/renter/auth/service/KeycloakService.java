@@ -185,7 +185,6 @@ public class KeycloakService {
 
             realmResource.users().get(keycloakUserId).remove();
 
-            System.out.println("Rolled back Keycloak user: " + keycloakUserId);
         } catch (Exception e) {
             // Log properly instead of ignoring
             System.err.println("Failed to delete Keycloak user " + keycloakUserId + ": " + e.getMessage());

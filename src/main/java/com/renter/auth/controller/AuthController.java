@@ -2,17 +2,17 @@ package com.renter.auth.controller;
 
 import com.renter.auth.dto.LoginRequest;
 import com.renter.auth.dto.RegisterRequest;
+import com.renter.auth.model.UserProfile;
+import com.renter.auth.dto.UserProfileDto;
 import com.renter.auth.model.User;
 import com.renter.auth.security.CurrentUser;
 import com.renter.auth.service.KeycloakService;
 import com.renter.auth.service.UserService;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Optional;
@@ -50,15 +50,11 @@ public class AuthController {
 
 
             // Step 2: Create business user record linked to Keycloak
-            User user = new User(
-                    keycloakUserId,
-                    request.getEmail(),
-                    request.getFirstName(),
-                    request.getLastName(),
-                    request.getPhoneNumber(),
-                    request.getUserType()
-            );
-            User savedUser = userService.saveUser(user);
+    
+  
+            User savedUser = userService.saveUser(request, keycloakUserId);
+
+  
 
             log.info("Registration successful for email: {} with userId: {}", request.getEmail(), savedUser.getId());
 
@@ -71,7 +67,7 @@ public class AuthController {
         } catch (Exception e) {
             // If business user creation fails, we should ideally clean up Keycloak user
             // For now, just return error
-            log.error("Registration failed for email: {} - Error: {}", request.getEmail(), e.getMessage());
+            System.out.println("Registration failed for email: {} - Error: {}"+request.getEmail()+e.getMessage());
             if (keycloakUserId != null){
                 try {
                     keycloakService.deleteUser(keycloakUserId);
@@ -80,7 +76,6 @@ public class AuthController {
                 } catch (Exception cleanupEx) {
                     // log but don't override main error
                     log.error("Failed to rollback Keycloak user: {}", cleanupEx.getMessage());
-
                 }
             }
 
